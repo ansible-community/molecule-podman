@@ -8,6 +8,9 @@ on:
     branches:  # any integration branch but not tag
       - "master"
   pull_request:
+  release:
+    types:
+      - created
   schedule:
     - cron: 1 0 * * *  # Run daily at 0:01 UTC
 
