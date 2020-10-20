@@ -1,7 +1,7 @@
 name: tox
 
 on:
-  create:  # is used for publishing to PyPI and TestPyPI
+  create:  # is used for publishing to TestPyPI
     tags:  # any tag regardless of its name, no branches
       - "**"
   push:  # only publishes pushes to the main branch to TestPyPI
@@ -92,7 +92,7 @@ jobs:
       - name: Check out src from Git
         uses: actions/checkout@v2
         with:
-          # Get shallow Git history (default) for tag creation events
+          # Get shallow Git history (default) for release events
           # but have a complete clone for any other workflows.
           # Both options fetch tags but since we're going to remove
           # one from HEAD in non-create-tag workflows, we need full
@@ -100,15 +100,21 @@ jobs:
           fetch-depth: >-
             ${{
               (
-                github.event_name == 'create' &&
-                github.event.ref_type == 'tag'
+                (
+                  github.event_name == 'create' &&
+                  github.event.ref_type == 'tag'
+                ) ||
+                github.event_name == 'release'
               ) &&
               1 || 0
             }}
-      - name: Drop Git tags from HEAD for non-tag-create events
+      - name: Drop Git tags from HEAD for non-tag-create and non-release events
         if: >-
-          github.event_name != 'create' ||
-          github.event.ref_type != 'tag'
+          (
+            github.event_name != 'create' ||
+            github.event.ref_type != 'tag'
+          ) &&
+          github.event_name != 'release'
         run: >-
           git tag --points-at HEAD
           |
