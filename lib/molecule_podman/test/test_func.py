@@ -2,12 +2,11 @@
 import os
 import subprocess
 
+import molecule_podman
 import pytest
 import sh
 from molecule import logger
 from molecule.test.conftest import change_dir_to, run_command
-
-import molecule_podman
 
 LOG = logger.get_logger(__name__)
 
