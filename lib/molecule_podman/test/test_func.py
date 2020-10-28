@@ -4,7 +4,6 @@ import subprocess
 
 import molecule_podman
 import pytest
-import sh
 from molecule import logger
 from molecule.test.conftest import change_dir_to, run_command
 
@@ -23,20 +22,27 @@ def format_result(result: subprocess.CompletedProcess):
 def test_command_init_scenario(temp_dir, DRIVER):
     """Verify that init scenario works."""
     role_directory = os.path.join(temp_dir.strpath, "test-init")
-    options = {}
-    cmd = sh.molecule.bake("init", "role", "test-init", **options)
+    cmd = ["molecule", "init", "role", "test-init"]
     run_command(cmd)
 
     with change_dir_to(role_directory):
         molecule_directory = pytest.helpers.molecule_directory()
         scenario_directory = os.path.join(molecule_directory, "test-scenario")
-        options = {"role_name": "test-init", "driver-name": DRIVER}
-        cmd = sh.molecule.bake("init", "scenario", "test-scenario", **options)
+        cmd = [
+            "molecule",
+            "init",
+            "scenario",
+            "test-scenario",
+            "--role-name",
+            "test-init",
+            "--driver-name",
+            DRIVER,
+        ]
         run_command(cmd)
 
         assert os.path.isdir(scenario_directory)
 
-        cmd = sh.molecule.bake("--debug", "test", "-s", "test-scenario")
+        cmd = ["molecule", "--debug", "test", "-s", "test-scenario"]
         run_command(cmd)
 
 
