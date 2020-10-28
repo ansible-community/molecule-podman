@@ -20,7 +20,6 @@ def format_result(result: subprocess.CompletedProcess):
     )
 
 
-# @pytest.mark.xfail(reason="need to fix template path")
 def test_command_init_scenario(temp_dir, DRIVER):
     """Verify that init scenario works."""
     role_directory = os.path.join(temp_dir.strpath, "test-init")
