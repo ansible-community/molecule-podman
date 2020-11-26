@@ -75,6 +75,12 @@
       with_items: "{{ molecule_yml.platforms }}"
       when: item.override_command | default(true)
 
+    # https://github.com/ansible-community/molecule-podman/issues/22
+    - name: Remove possible pre-existing containers
+      shell: >
+        podman container exists {{ item.name }} && podman rm {{ item.name }} -f || true
+      with_items: "{{ molecule_yml.platforms }}"
+
     - name: Create molecule instance(s)
       command: >
         podman run
