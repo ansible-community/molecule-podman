@@ -5,7 +5,8 @@ import subprocess
 import molecule_podman
 import pytest
 from molecule import logger
-from molecule.test.conftest import change_dir_to, run_command
+from molecule.test.conftest import change_dir_to
+from molecule.util import run_command
 
 LOG = logger.get_logger(__name__)
 
