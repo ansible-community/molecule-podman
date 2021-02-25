@@ -94,6 +94,7 @@ class Podman(Driver):
             cgroup_manager: cgroupfs
             storage_opt: overlay.mount_program=/usr/bin/fuse-overlayfs
             storage_driver: overlay
+            systemd: true|false|always
 
     If specifying the `CMD`_ directive in your ``Dockerfile.j2`` or consuming a
     built image which declares a ``CMD`` directive, then you must set

@@ -105,6 +105,7 @@
         {% if item.cgroup_manager is defined %}--cgroup-manager={{ item.cgroup_manager }}{% endif %}
         {% if item.storage_opt is defined %}--storage-opt={{ item.storage_opt }}{% endif %}
         {% if item.storage_driver is defined %}--storage-driver={{ item.storage_driver }}{% endif %}
+        {% if item.systemd is defined %}--systemd={{ item.systemd }}{% endif %}
         {{ item.pre_build_image | default(false) | ternary('', 'molecule_local/') }}{{ item.image }}
         {{ (command_directives_dict | default({}))[item.name] | default('') }}
       register: server
