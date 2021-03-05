@@ -80,6 +80,28 @@
       shell: >
         podman container exists {{ item.name }} && podman rm {{ item.name }} -f || true
       with_items: "{{ molecule_yml.platforms }}"
+    - name: Discover local podman networks
+      containers.podman.podman_network_info:
+        name: "{{ item.network }}"
+      loop: "{{ molecule_yml.platforms | flatten(levels=1) }}"
+      loop_control:
+        extended: true
+        label: "{{ item.name }}: {{ item.network | default('None specified') }}"
+      register: podman_network
+      when:
+        - item.network is defined
+        - ansible_loop.first
+      failed_when: false
+
+    - name: Create podman network dedicated to this scenario
+      containers.podman.podman_network:
+        name: "{{ podman_network.results[0].ansible_loop.allitems[0].network }}"
+        subnet:
+          "{{ podman_network.results[0].ansible_loop.allitems[0].subnet }}"
+      when:
+        - podman_network.results[0].msg is defined
+        - "'no such network' in podman_network.results[0].msg"
+        - podman_network.results[0].networks is undefined
 
     - name: Create molecule instance(s)
       command: >
