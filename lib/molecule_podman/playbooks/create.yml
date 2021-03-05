@@ -122,7 +122,7 @@
         {% if item.restart_policy is defined %}--restart={{ item.restart_policy }}{% if item.restart_retries is defined %}:{{ item.restart_retries }}{% endif %}{% endif %}
         {% if item.tty is defined %}--tty={{ item.tty }}{% endif %}
         {% if item.network is defined %}--network={{ item.network }}{% endif %}
-        {% if item.etc_hosts is defined %}{% for i,k in item.etc_hosts.items() %}--add-host {{ i }}:{{ k }} {% endfor %}{% endif %}
+        {% if item.etc_hosts is defined %}{% for i,k in item.etc_hosts.items() %}{% if i != item.name %}--add-host {{ i }}:{{ k }} {% endif %}{% endfor %}{% endif %}
         {% if item.hostname is defined %}--hostname={{ item.hostname }}{% elif item.name is defined %}--hostname={{ item.name }}{% endif %}
         {% if item.cgroup_manager is defined %}--cgroup-manager={{ item.cgroup_manager }}{% endif %}
         {% if item.storage_opt is defined %}--storage-opt={{ item.storage_opt }}{% endif %}
