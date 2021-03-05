@@ -115,7 +115,7 @@
         {% if item.tmpfs is defined %}{% for i in item.tmpfs %}--tmpfs={{ i }} {% endfor %}{% endif %}
         {% if item.capabilities is defined %}{% for i in item.capabilities %}--cap-add={{ i }} {% endfor %}{% endif %}
         {% if item.exposed_ports is defined %}--expose="{{ item.exposed_ports|join(',') }}"{% endif %}
-        {% if item.published_ports is defined %}--publish="{{ item.published_ports|join(',') }}"{% endif %}
+        {% if item.published_ports is defined %}{% for i in item.published_ports %}--publish={{ i }}{% endfor %}{% endif %}
         {% if item.ulimits is defined %}{% for i in item.ulimits %}--ulimit={{ i }} {% endfor %}{% endif %}
         {% if item.dns_servers is defined %}--dns="{{ item.dns_servers|join(',') }}"{% endif %}
         {% if item.env is defined %}{% for i,k in item.env.items() %}--env={{ i }}={{ k }} {% endfor %}{% endif %}
