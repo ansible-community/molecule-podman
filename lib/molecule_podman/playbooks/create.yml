@@ -50,6 +50,7 @@
       register: podman_images
 
     - name: Build an Ansible compatible image
+      become: "{{ not (item.item.rootless|default(true)) }}"
       command: >
         podman build
         -f {{ item.dest }}
@@ -119,4 +120,5 @@
       register: podman_jobs
       until: podman_jobs.finished
       retries: 300
+      become: "{{ not (item.item.rootless|default(true)) }}"
       with_items: "{{ server.results }}"
