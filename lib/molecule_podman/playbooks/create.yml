@@ -1,3 +1,4 @@
+---
 - name: Create
   hosts: localhost
   connection: local
@@ -14,6 +15,10 @@
         {% if lookup('env', 'DOCKER_CERT_PATH') %}--cert-dir {{ item.cert_path | default(lookup('env', 'DOCKER_CERT_PATH') + '/cert.pem') }}{% endif %}
         {{ item.registry.url }}
       with_items: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: >-
+          "{{ item.name }} registry username:
+          {{ item.registry.credentials.username | default('None specified') }}"
       when:
         - item.registry is defined
         - item.registry.credentials is defined
@@ -23,6 +28,8 @@
       stat:
         path: "{{ molecule_scenario_directory + '/' + (item.dockerfile | default( 'Dockerfile.j2')) }}"
       loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "Dockerfile: {{ item.dockerfile | default('None specified') }}"
       register: dockerfile_stats
 
     - name: Create Dockerfiles from image names
@@ -38,6 +45,9 @@
       loop: "{{ molecule_yml.platforms }}"
       loop_control:
         index_var: i
+        label: >-
+          "Dockerfile: {{ item.dockerfile | default('None specified') }};
+          Image: {{ item.image | default('None specified') }}"
       when: not item.pre_build_image | default(false)
       register: platforms
 
@@ -45,6 +55,8 @@
       podman_image_info:
         name: "molecule_local/{{ item.item.name }}"
       with_items: "{{ platforms.results }}"
+      loop_control:
+        label: "{{ item.item.name | default('None specified') }}"
       when:
         - not item.pre_build_image | default(false)
       register: podman_images
@@ -57,6 +69,8 @@
         {% if item.item.buildargs is defined %}{% for i,k in item.item.buildargs.items() %}--build-arg={{ i }}={{ k }} {% endfor %}{% endif %}
         {% if item.item.pull is defined %}--pull={{ item.item.pull }}{% endif %}
       with_items: "{{ platforms.results }}"
+      loop_control:
+        label: "{{ item.item.image | default('None specified') }}"
       when:
         - platforms.changed or podman_images.results | map(attribute='images') | select('equalto', []) | list | count >= 0
         - not item.item.pre_build_image | default(false)
@@ -73,6 +87,10 @@
              combine({ item.name: item.command | default('bash -c "while true; do sleep 10000; done"') })
           }}
       with_items: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: >-
+          "{{ item.name }} command:
+          {{ item.command | default('None specified') }}"
       when: item.override_command | default(true)
 
     # https://github.com/ansible-community/molecule-podman/issues/22
@@ -80,6 +98,9 @@
       shell: >
         podman container exists {{ item.name }} && podman rm {{ item.name }} -f || true
       with_items: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"
+
     - name: Discover local podman networks
       containers.podman.podman_network_info:
         name: "{{ item.network }}"
@@ -134,6 +155,8 @@
         {{ (command_directives_dict | default({}))[item.name] | default('') }}
       register: server
       with_items: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"
       async: 7200
       poll: 0
 
@@ -144,3 +167,5 @@
       until: podman_jobs.finished
       retries: 300
       with_items: "{{ server.results }}"
+      loop_control:
+        label: "{{ item.item.name | default('Unamed')}}"
