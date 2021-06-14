@@ -168,4 +168,4 @@
       retries: 300
       with_items: "{{ server.results }}"
       loop_control:
-        label: "{{ item.item.name | default('Unamed')}}"
+        label: "{{ item.item.name | default('Unnamed')}}"
