@@ -17,8 +17,12 @@ Molecule Podman Plugin
    :target: LICENSE
    :alt: Repository License
 
-Molecule podman Plugin is designed to allow use Podman containers for
+Molecule Podman Plugin is designed to allow use Podman containers for
 provisioning test resources.
+
+This plugin requires `containers.podman` collection to be present:
+
+    ansible-galaxy collection install containers.podman
 
 Please note that this driver is currently in its early stage of development.
 

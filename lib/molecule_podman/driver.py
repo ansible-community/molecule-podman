@@ -23,6 +23,7 @@ from __future__ import absolute_import
 
 import os
 
+from ansiblelint.prerun import require_collection
 from molecule import logger
 from molecule.api import Driver
 from molecule.util import lru_cache
@@ -189,3 +190,4 @@ class Podman(Driver):
     def sanity_checks(self):
         """Implement Podman driver sanity checks."""
         log.info("Sanity checks: '{}'".format(self._name))
+        require_collection("containers.podman", "1.6.1")
