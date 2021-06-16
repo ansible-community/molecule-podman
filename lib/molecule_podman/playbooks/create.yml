@@ -61,7 +61,7 @@
         - not item.pre_build_image | default(false)
       register: podman_images
 
-    - name: Build an Ansible compatible image
+    - name: Build an Ansible compatible image  # noqa: no-handler
       command: >
         podman build
         -f {{ item.dest }}
@@ -95,11 +95,11 @@
 
     # https://github.com/ansible-community/molecule-podman/issues/22
     - name: Remove possible pre-existing containers
-      shell: >
-        podman container exists {{ item.name }} && podman rm {{ item.name }} -f || true
-      with_items: "{{ molecule_yml.platforms }}"
-      loop_control:
-        label: "{{ item.name }}"
+      command: >
+        podman rm -f -i -v {% for key in molecule_yml.platforms %}{{ key.name }} {% endfor %}
+      register: result
+      changed_when: true
+      failed_when: false
 
     - name: Discover local podman networks
       containers.podman.podman_network_info:
@@ -169,4 +169,4 @@
       retries: 300
       with_items: "{{ server.results }}"
       loop_control:
-        label: "{{ item.item.name | default('Unnamed')}}"
+        label: "{{ item.item.name | default('Unnamed') }}"
