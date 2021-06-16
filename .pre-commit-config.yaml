@@ -5,16 +5,16 @@ exclude: |
     )
 repos:
   - repo: https://github.com/PyCQA/isort
-    rev: 5.6.4
+    rev: 5.8.0
     hooks:
       - id: isort
   - repo: https://github.com/python/black.git
-    rev: 20.8b1
+    rev: 21.6b0
     hooks:
       - id: black
         language_version: python3
   - repo: https://github.com/pre-commit/pre-commit-hooks.git
-    rev: v3.3.0
+    rev: v4.0.1
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
@@ -25,7 +25,7 @@ repos:
       - id: debug-statements
         language_version: python3
   - repo: https://gitlab.com/pycqa/flake8.git
-    rev: 3.8.4
+    rev: 3.9.2
     hooks:
       - id: flake8
         additional_dependencies:
@@ -35,14 +35,14 @@ repos:
           - flake8-docstrings>=1.5.0
         language_version: python3
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.25.0
+    rev: v1.26.1
     hooks:
       - id: yamllint
         files: \.(yaml|yml)$
         types: [file, yaml]
         entry: yamllint --strict
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.790
+    rev: v0.902
     hooks:
       - id: mypy
         # empty args needed in order to match mypy cli behavior
@@ -54,10 +54,14 @@ repos:
           - molecule
           - packaging
   - repo: https://github.com/pre-commit/mirrors-pylint
-    rev: v2.6.0
+    rev: v3.0.0a3
     hooks:
       - id: pylint
         additional_dependencies:
           - ansible-core>=2.11.1
           - ansible-lint>=5.1.0a0
           - molecule
+  - repo: https://github.com/ansible/ansible-lint.git
+    rev: v5.1.0a0
+    hooks:
+      - id: ansible-lint
