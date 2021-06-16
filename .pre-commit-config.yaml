@@ -50,6 +50,7 @@ repos:
         entry: mypy lib/
         pass_filenames: false
         additional_dependencies:
+          - ansible-lint>=5.1.0a0
           - molecule
           - packaging
   - repo: https://github.com/pre-commit/mirrors-pylint
@@ -57,5 +58,6 @@ repos:
     hooks:
       - id: pylint
         additional_dependencies:
-          - ansible-base
+          - ansible-core>=2.11.1
+          - ansible-lint>=5.1.0a0
           - molecule
