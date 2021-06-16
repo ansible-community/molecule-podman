@@ -101,6 +101,29 @@
       loop_control:
         label: "{{ item.name }}"
 
+    - name: Discover local podman networks
+      containers.podman.podman_network_info:
+        name: "{{ item.network }}"
+      loop: "{{ molecule_yml.platforms | flatten(levels=1) }}"
+      loop_control:
+        extended: true
+        label: "{{ item.name }}: {{ item.network | default('None specified') }}"
+      register: podman_network
+      when:
+        - item.network is defined
+        - ansible_loop.first
+      failed_when: false
+
+    - name: Create podman network dedicated to this scenario
+      containers.podman.podman_network:
+        name: "{{ podman_network.results[0].ansible_loop.allitems[0].network }}"
+        subnet:
+          "{{ podman_network.results[0].ansible_loop.allitems[0].subnet }}"
+      when:
+        - podman_network.results[0].msg is defined
+        - "'no such network' in podman_network.results[0].msg"
+        - podman_network.results[0].networks is undefined
+
     - name: Create molecule instance(s)
       command: >
         podman
@@ -112,19 +135,21 @@
         --name "{{ item.name }}"
         {% if item.pid_mode is defined %}--pid={{ item.pid_mode }}{% endif %}
         {% if item.privileged is defined %}--privileged={{ item.privileged }}{% endif %}
+        {% if item.detach is defined %}--detach{% endif %}
         {% if item.security_opts is defined %}{% for i in item.security_opts %}--security-opt {{ i }} {% endfor %}{% endif %}
         {% if item.volumes is defined %}{% for i in item.volumes %}--volume {{ i }} {% endfor %}{% endif %}
         {% if item.tmpfs is defined %}{% for i in item.tmpfs %}--tmpfs={{ i }} {% endfor %}{% endif %}
         {% if item.capabilities is defined %}{% for i in item.capabilities %}--cap-add={{ i }} {% endfor %}{% endif %}
         {% if item.exposed_ports is defined %}--expose="{{ item.exposed_ports|join(',') }}"{% endif %}
-        {% if item.published_ports is defined %}--publish="{{ item.published_ports|join(',') }}"{% endif %}
+        {% if item.published_ports is defined %}{% for i in item.published_ports %}--publish={{ i }}{% endfor %}{% endif %}
         {% if item.ulimits is defined %}{% for i in item.ulimits %}--ulimit={{ i }} {% endfor %}{% endif %}
         {% if item.dns_servers is defined %}--dns="{{ item.dns_servers|join(',') }}"{% endif %}
         {% if item.env is defined %}{% for i,k in item.env.items() %}--env={{ i }}={{ k }} {% endfor %}{% endif %}
         {% if item.restart_policy is defined %}--restart={{ item.restart_policy }}{% if item.restart_retries is defined %}:{{ item.restart_retries }}{% endif %}{% endif %}
         {% if item.tty is defined %}--tty={{ item.tty }}{% endif %}
         {% if item.network is defined %}--network={{ item.network }}{% endif %}
-        {% if item.etc_hosts is defined %}{% for i,k in item.etc_hosts.items() %}--add-host {{ i }}:{{ k }} {% endfor %}{% endif %}
+        {% if item.ip is defined %}--ip={{ item.ip }}{% endif %}
+        {% if item.etc_hosts is defined %}{% for i,k in item.etc_hosts.items() %}{% if i != item.name %}--add-host {{ i }}:{{ k }} {% endif %}{% endfor %}{% endif %}
         {% if item.hostname is defined %}--hostname={{ item.hostname }}{% elif item.name is defined %}--hostname={{ item.name }}{% endif %}
         {% if item.systemd is defined %}--systemd={{ item.systemd }}{% endif %}
         {{ item.pre_build_image | default(false) | ternary('', 'molecule_local/') }}{{ item.image }}
@@ -144,4 +169,4 @@
       retries: 300
       with_items: "{{ server.results }}"
       loop_control:
-        label: "{{ item.item.name | default('Unamed')}}"
+        label: "{{ item.item.name | default('Unnamed')}}"
