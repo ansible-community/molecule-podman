@@ -52,7 +52,7 @@
       register: platforms
 
     - name: Discover local Podman images
-      podman_image_info:
+      containers.podman.podman_image_info:
         name: "molecule_local/{{ item.item.name }}"
       with_items: "{{ platforms.results }}"
       loop_control:
