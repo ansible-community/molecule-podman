@@ -37,7 +37,7 @@
         label: "{{ item.image }}"
 
     - name: Build Dockerfile(s)
-      podman_image:
+      containers.podman.podman_image:
         name: "{{ item.item.image }}"
         path: "{{ temp_image_dirs.results[index].path }}"
         state: build
