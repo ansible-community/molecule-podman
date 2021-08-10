@@ -29,7 +29,8 @@ from molecule.api import Driver
 from molecule.util import lru_cache
 
 log = logger.get_logger(__name__)
-# To change the podman executable, set environment variable MOLECULE_PODMAN_EXECUTABLE
+# To change the podman executable, set environment variable
+# MOLECULE_PODMAN_EXECUTABLE
 # An example could be MOLECULE_PODMAN_EXECUTABLE=podman-remote
 podman_exec = os.environ.get("MOLECULE_PODMAN_EXECUTABLE", "podman")
 
