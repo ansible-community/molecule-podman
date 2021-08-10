@@ -190,7 +190,7 @@ class Podman(Driver):
     def ansible_connection_options(self, instance_name):
         return {
             "ansible_connection": "podman",
-            "ansible_podman_executable": f"{podman_exec}"
+            "ansible_podman_executable": f"{podman_exec}",
         }
 
     @lru_cache()
