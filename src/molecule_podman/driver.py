@@ -188,7 +188,10 @@ class Podman(Driver):
         return {"instance": instance_name}
 
     def ansible_connection_options(self, instance_name):
-        return {"ansible_connection": "podman", "ansible_podman_executable": f"{podman_exec}"}
+        return {
+            "ansible_connection": "podman",
+            "ansible_podman_executable": f"{podman_exec}"
+        }
 
     @lru_cache()
     def sanity_checks(self):
