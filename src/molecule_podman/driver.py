@@ -29,6 +29,7 @@ from molecule.api import Driver
 from molecule.util import lru_cache
 
 log = logger.get_logger(__name__)
+podman_exec = os.environ.get("MOLECULE_PODMAN_EXECUTABLE", "podman")
 
 
 class Podman(Driver):
@@ -164,7 +165,7 @@ class Podman(Driver):
     @property
     def login_cmd_template(self):
         return (
-            "podman exec "
+            f"{podman_exec} exec "
             "-e COLUMNS={columns} "
             "-e LINES={lines} "
             "-e TERM=bash "
@@ -184,7 +185,7 @@ class Podman(Driver):
         return {"instance": instance_name}
 
     def ansible_connection_options(self, instance_name):
-        return {"ansible_connection": "podman"}
+        return {"ansible_connection": "podman", "ansible_podman_executable": f"{podman_exec}"}
 
     @lru_cache()
     def sanity_checks(self):
