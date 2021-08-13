@@ -8,9 +8,15 @@
   vars:
     podman_exec: "{{ lookup('env','MOLECULE_PODMAN_EXECUTABLE')|default('podman',true) }}"
   tasks:
+    - name: get podman executable path
+      command: which {{ podman_exec }}
+      register: podman_cmd
+      environment:
+        PATH: "{{ ansible_env.PATH}}:/sbin:/usr/sbin"
+
     - name: Log into a container registry
       command: >
-        {{ podman_exec }} login
+        {{ podman_cmd }} login
         --username {{ item.registry.credentials.username }}
         --password {{ item.registry.credentials.password }}
         --tls-verify={{ item.tls_verify | default(lookup('env', 'DOCKER_TLS_VERIFY')) or false }}
@@ -66,7 +72,7 @@
 
     - name: Build an Ansible compatible image  # noqa: no-handler
       command: >
-        {{ podman_exec }} build
+        {{ podman_cmd }} build
         -f {{ item.dest }}
         -t molecule_local/{{ item.item.image }}
         {% if item.item.buildargs is defined %}{% for i,k in item.item.buildargs.items() %}--build-arg={{ i }}={{ k }} {% endfor %}{% endif %}
@@ -99,7 +105,7 @@
     # https://github.com/ansible-community/molecule-podman/issues/22
     - name: Remove possible pre-existing containers
       command: >
-        {{ podman_exec }} rm -f -i -v {% for key in molecule_yml.platforms %}{{ key.name }} {% endfor %}
+        {{ podman_cmd }} rm -f -i -v {% for key in molecule_yml.platforms %}{{ key.name }} {% endfor %}
       register: result
       changed_when: true
       failed_when: false
