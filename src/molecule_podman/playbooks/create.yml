@@ -10,9 +10,12 @@
   tasks:
     - name: get podman executable path
       command: which {{ podman_exec }}
-      register: podman_cmd
+      register: podman_path
       environment:
-        PATH: "{{ ansible_env.PATH}}:/sbin:/usr/sbin"
+        PATH: "{{ ansible_env.PATH}}:/sbin:/usr/sbin" 
+    - name: save path to executable as fact
+      set_fact:
+        podman_cmd: "{{ podman_path.stdout }}"
 
     - name: Log into a container registry
       command: >
@@ -137,7 +140,7 @@
 
     - name: Create molecule instance(s)
       command: >
-        {{ podman_exec }}
+        {{ podman_cmd }}
         {% if item.cgroup_manager is defined %}--cgroup-manager={{ item.cgroup_manager }}{% endif %}
         {% if item.storage_opt is defined %}--storage-opt={{ item.storage_opt }}{% endif %}
         {% if item.storage_driver is defined %}--storage-driver={{ item.storage_driver }}{% endif %}
