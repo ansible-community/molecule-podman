@@ -34,7 +34,9 @@ variable ``MOLECULE_PODMAN_EXECUTABLE``. For instance, if you wish to run
 molecule with ``podman-remote`` instead of ordinary ``podman``, the variable
 can be exported as:
 
-export MOLECULE_PODMAN_EXECUTABLE=podman-remote
+.. code-block:: console
+
+   $ export MOLECULE_PODMAN_EXECUTABLE=podman-remote
 
 .. _get-involved:
 
