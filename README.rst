@@ -29,7 +29,10 @@ Please note that this driver is currently in its early stage of development.
 Change podman executable
 ========================
 
-To change the podman executable from the standard podman, export environment variable MOLECULE_PODMAN_EXECUTABLE. For instance if you wish to run molecule with podman-remote instead of ordinary podman, the variable can be exportet as:
+To change the podman executable from the standard podman, export environment
+variable ``MOLECULE_PODMAN_EXECUTABLE``. For instance, if you wish to run
+molecule with ``podman-remote`` instead of ordinary ``podman``, the variable
+can be exported as:
 
 export MOLECULE_PODMAN_EXECUTABLE=podman-remote
 
