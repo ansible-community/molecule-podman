@@ -29,11 +29,6 @@ from molecule.api import Driver
 from molecule.util import lru_cache
 
 log = logger.get_logger(__name__)
-# To change the podman executable, set environment variable
-# MOLECULE_PODMAN_EXECUTABLE
-# An example could be MOLECULE_PODMAN_EXECUTABLE=podman-remote
-podman_exec = os.environ.get("MOLECULE_PODMAN_EXECUTABLE", "podman")
-
 
 class Podman(Driver):
     """
@@ -155,7 +150,16 @@ class Podman(Driver):
     def __init__(self, config=None):
         """Construct Podman."""
         super(Podman, self).__init__(config)
-        self._name = "podman"
+        self._name = "podman"        
+        # To change the podman executable, set environment variable
+        # MOLECULE_PODMAN_EXECUTABLE
+        # An example could be MOLECULE_PODMAN_EXECUTABLE=podman-remote
+        self.podman_exec = os.environ.get("MOLECULE_PODMAN_EXECUTABLE", "podman")
+        self.podman_cmd = distutils.spawn.find_executable(self.podman_exec)
+        if not self.podman_cmd:
+            msg = f"command not found in PATH {self.podman_exec}"
+            util.sysexit_with_message(msg)
+
 
     @property
     def name(self):
@@ -168,7 +172,7 @@ class Podman(Driver):
     @property
     def login_cmd_template(self):
         return (
-            f"{podman_exec} exec "
+            f"{self.podman_cmd} exec "
             "-e COLUMNS={columns} "
             "-e LINES={lines} "
             "-e TERM=bash "
@@ -190,7 +194,7 @@ class Podman(Driver):
     def ansible_connection_options(self, instance_name):
         return {
             "ansible_connection": "podman",
-            "ansible_podman_executable": f"{podman_exec}",
+            "ansible_podman_executable": f"{self.podman_exec}",
         }
 
     @lru_cache()
