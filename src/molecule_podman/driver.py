@@ -22,6 +22,8 @@
 from __future__ import absolute_import
 
 import os
+from molecule import util
+import distutils.spawn
 from typing import Dict
 
 from molecule import logger
