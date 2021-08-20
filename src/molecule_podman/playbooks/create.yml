@@ -5,10 +5,22 @@
   gather_facts: false
   no_log: "{{ molecule_no_log }}"
   become: "{{ not (item.rootless|default(true)) }}"
+  vars:
+    podman_exec: "{{ lookup('env','MOLECULE_PODMAN_EXECUTABLE')|default('podman',true) }}"
   tasks:
+    - name: get podman executable path
+      command: which {{ podman_exec }}
+      register: podman_path
+      environment:
+        PATH: "{{ ansible_env.PATH }}:/sbin:/usr/sbin"
+      changed_when: false
+    - name: save path to executable as fact
+      set_fact:
+        podman_cmd: "{{ podman_path.stdout }}"
+
     - name: Log into a container registry
       command: >
-        podman login
+        {{ podman_cmd }} login
         --username {{ item.registry.credentials.username }}
         --password {{ item.registry.credentials.password }}
         --tls-verify={{ item.tls_verify | default(lookup('env', 'DOCKER_TLS_VERIFY')) or false }}
@@ -54,6 +66,7 @@
     - name: Discover local Podman images
       containers.podman.podman_image_info:
         name: "molecule_local/{{ item.item.name }}"
+        executable: "{{ podman_exec }}"
       with_items: "{{ platforms.results }}"
       loop_control:
         label: "{{ item.item.name | default('None specified') }}"
@@ -63,7 +76,7 @@
 
     - name: Build an Ansible compatible image  # noqa: no-handler
       command: >
-        podman build
+        {{ podman_cmd }} build
         -f {{ item.dest }}
         -t molecule_local/{{ item.item.image }}
         {% if item.item.buildargs is defined %}{% for i,k in item.item.buildargs.items() %}--build-arg={{ i }}={{ k }} {% endfor %}{% endif %}
@@ -96,7 +109,7 @@
     # https://github.com/ansible-community/molecule-podman/issues/22
     - name: Remove possible pre-existing containers
       command: >
-        podman rm -f -i -v {% for key in molecule_yml.platforms %}{{ key.name }} {% endfor %}
+        {{ podman_cmd }} rm -f -i -v {% for key in molecule_yml.platforms %}{{ key.name }} {% endfor %}
       register: result
       changed_when: true
       failed_when: false
@@ -104,6 +117,7 @@
     - name: Discover local podman networks
       containers.podman.podman_network_info:
         name: "{{ item.network }}"
+        executable: "{{ podman_exec }}"
       loop: "{{ molecule_yml.platforms | flatten(levels=1) }}"
       loop_control:
         extended: true
@@ -117,6 +131,7 @@
     - name: Create podman network dedicated to this scenario
       containers.podman.podman_network:
         name: "{{ podman_network.results[0].ansible_loop.allitems[0].network }}"
+        executable: "{{ podman_exec }}"
         subnet:
           "{{ podman_network.results[0].ansible_loop.allitems[0].subnet }}"
       when:
@@ -126,7 +141,7 @@
 
     - name: Create molecule instance(s)
       command: >
-        podman
+        {{ podman_cmd }}
         {% if item.cgroup_manager is defined %}--cgroup-manager={{ item.cgroup_manager }}{% endif %}
         {% if item.storage_opt is defined %}--storage-opt={{ item.storage_opt }}{% endif %}
         {% if item.storage_driver is defined %}--storage-driver={{ item.storage_driver }}{% endif %}

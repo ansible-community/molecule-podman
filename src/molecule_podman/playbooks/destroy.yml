@@ -5,9 +5,11 @@
   gather_facts: false
   no_log: "{{ molecule_no_log }}"
   become: "{{ not (item.rootless|default(true)) }}"
+  vars:
+    podman_exec: "{{ lookup('env','MOLECULE_PODMAN_EXECUTABLE')|default('podman',true) }}"
   tasks:
     - name: Destroy molecule instance(s)
-      shell: podman container exists {{ item.name }} && podman rm -f {{ item.name }} || true
+      shell: "{{ podman_exec }} container exists {{ item.name }} && {{ podman_exec }} rm -f {{ item.name }} || true"
       register: server
       with_items: "{{ molecule_yml.platforms }}"
       async: 7200

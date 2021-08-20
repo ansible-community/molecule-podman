@@ -21,10 +21,11 @@
 
 from __future__ import absolute_import
 
+import distutils.spawn
 import os
 from typing import Dict
 
-from molecule import logger
+from molecule import logger, util
 from molecule.api import Driver
 from molecule.util import lru_cache
 
@@ -152,6 +153,14 @@ class Podman(Driver):
         """Construct Podman."""
         super(Podman, self).__init__(config)
         self._name = "podman"
+        # To change the podman executable, set environment variable
+        # MOLECULE_PODMAN_EXECUTABLE
+        # An example could be MOLECULE_PODMAN_EXECUTABLE=podman-remote
+        self.podman_exec = os.environ.get("MOLECULE_PODMAN_EXECUTABLE", "podman")
+        self.podman_cmd = distutils.spawn.find_executable(self.podman_exec)
+        if not self.podman_cmd:
+            msg = f"command not found in PATH {self.podman_exec}"
+            util.sysexit_with_message(msg)
 
     @property
     def name(self):
@@ -164,7 +173,7 @@ class Podman(Driver):
     @property
     def login_cmd_template(self):
         return (
-            "podman exec "
+            f"{self.podman_cmd} exec "
             "-e COLUMNS={columns} "
             "-e LINES={lines} "
             "-e TERM=bash "
@@ -184,7 +193,10 @@ class Podman(Driver):
         return {"instance": instance_name}
 
     def ansible_connection_options(self, instance_name):
-        return {"ansible_connection": "podman"}
+        return {
+            "ansible_connection": "podman",
+            "ansible_podman_executable": f"{self.podman_exec}",
+        }
 
     @lru_cache()
     def sanity_checks(self):
