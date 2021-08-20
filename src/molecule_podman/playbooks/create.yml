@@ -12,7 +12,8 @@
       command: which {{ podman_exec }}
       register: podman_path
       environment:
-        PATH: "{{ ansible_env.PATH}}:/sbin:/usr/sbin" 
+        PATH: "{{ ansible_env.PATH }}:/sbin:/usr/sbin" 
+      changed_when: false 
     - name: save path to executable as fact
       set_fact:
         podman_cmd: "{{ podman_path.stdout }}"
