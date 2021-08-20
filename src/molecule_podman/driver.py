@@ -21,16 +21,16 @@
 
 from __future__ import absolute_import
 
-import os
-from molecule import util
 import distutils.spawn
+import os
 from typing import Dict
 
-from molecule import logger
+from molecule import logger, util
 from molecule.api import Driver
 from molecule.util import lru_cache
 
 log = logger.get_logger(__name__)
+
 
 class Podman(Driver):
     """
