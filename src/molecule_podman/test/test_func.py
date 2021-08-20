@@ -24,16 +24,17 @@ def test_command_init_scenario(temp_dir, DRIVER):
     """Verify that init scenario works."""
     role_directory = os.path.join(temp_dir.strpath, "test-init")
     cmd = ["molecule", "init", "role", "test-init"]
+    scenario_name = "test-scenario-podman"
     result = run_command(cmd)
     assert result.returncode == 0
 
     with change_dir_to(role_directory):
-        scenario_directory = os.path.join(molecule_directory(), "test-scenario")
+        scenario_directory = os.path.join(molecule_directory(), scenario_name)
         cmd = [
             "molecule",
             "init",
             "scenario",
-            "test-scenario",
+            scenario_name,
             "--role-name",
             "test-init",
             "--driver-name",
@@ -44,7 +45,15 @@ def test_command_init_scenario(temp_dir, DRIVER):
 
         assert os.path.isdir(scenario_directory)
 
-        cmd = ["molecule", "--debug", "test", "-s", "test-scenario"]
+        # run molecule reset as this may clean some leftovers from other
+        # test runs and also ensure that reset works.
+        result = run_command(["molecule", "reset"])  # default sceanario
+        assert result.returncode == 0
+
+        result = run_command(["molecule", "reset", "-s", scenario_name])
+        assert result.returncode == 0
+
+        cmd = ["molecule", "--debug", "test", "-s", scenario_name]
         result = run_command(cmd)
         assert result.returncode == 0
 
