@@ -152,7 +152,7 @@ class Podman(Driver):
     def __init__(self, config=None):
         """Construct Podman."""
         super(Podman, self).__init__(config)
-        self._name = "podman"        
+        self._name = "podman"
         # To change the podman executable, set environment variable
         # MOLECULE_PODMAN_EXECUTABLE
         # An example could be MOLECULE_PODMAN_EXECUTABLE=podman-remote
@@ -161,7 +161,6 @@ class Podman(Driver):
         if not self.podman_cmd:
             msg = f"command not found in PATH {self.podman_exec}"
             util.sysexit_with_message(msg)
-
 
     @property
     def name(self):
