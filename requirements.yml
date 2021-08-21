@@ -1,0 +1,8 @@
+collections:
+  - name: ansible.posix
+    version: 1.3.0
+    # This version is the first one that enables use of synchronize
+    # module with with podman.
+    # https://galaxy.ansible.com/ansible/posix
+  - name: containers.podman
+    version: 1.6.2
