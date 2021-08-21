@@ -206,4 +206,4 @@ class Podman(Driver):
     @property
     def required_collections(self) -> Dict[str, str]:
         """Return collections dict containing names and versions required."""
-        return {"containers.podman": "1.6.2"}
+        return {"containers.podman": "1.6.2", "ansible.posix": "1.3.0"}
