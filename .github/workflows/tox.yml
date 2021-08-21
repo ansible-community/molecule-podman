@@ -26,15 +26,19 @@ jobs:
         include:
           - tox_env: lint
           # - tox_env: docs
-          - tox_env: py36
+          - tox_env: py36-ansible29
             PREFIX: PYTEST_REQPASS=3
-          - tox_env: py36-devel
+          - tox_env: py36-ansible210
             PREFIX: PYTEST_REQPASS=3
-          - tox_env: py37
+          - tox_env: py36-ansible211
             PREFIX: PYTEST_REQPASS=3
-          - tox_env: py38
+          - tox_env: py37-ansible211
             PREFIX: PYTEST_REQPASS=3
-          - tox_env: py39
+          - tox_env: py38-ansible211
+            PREFIX: PYTEST_REQPASS=3
+          - tox_env: py39-ansible211
+            PREFIX: PYTEST_REQPASS=3
+          - tox_env: py39-devel-ansible211
             PREFIX: PYTEST_REQPASS=3
           - tox_env: packaging
 
@@ -59,14 +63,9 @@ jobs:
           python-version: ${{ steps.py_ver.outputs.version }}
       - name: Install dependencies
         run: |
-          # avoid https://github.com/moby/moby/issues/38185
-          # sudo apt-get remove -y containerd.io docker-ce
-          # sudo apt-get install -y containerd podman
-          # sudo systemctl enable containerd
           podman version
           podman info
-          python -m pip install -U "pip>=20.3b1"
-          pip install tox
+          python -m pip install -U "pip>=21.2.4" "tox>=3.24.2"
       - name: Run tox -e ${{ matrix.tox_env }}
         run: |
           echo "${{ matrix.PREFIX }} tox -e ${{ matrix.tox_env }}"
