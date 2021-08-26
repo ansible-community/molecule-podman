@@ -43,6 +43,7 @@ repos:
         entry: mypy src/
         pass_filenames: false
         additional_dependencies:
+          - ansible-compat>=0.5.0
           - molecule
           - packaging
   - repo: https://github.com/pre-commit/mirrors-pylint
