@@ -1,9 +1,10 @@
 """Functional tests."""
 import os
+import pathlib
 import subprocess
 
 from molecule import logger
-from molecule.test.conftest import change_dir_to, molecule_directory
+from molecule.test.conftest import change_dir_to
 from molecule.util import run_command
 
 import molecule_podman
@@ -20,30 +21,24 @@ def format_result(result: subprocess.CompletedProcess):
     )
 
 
-def test_command_init_scenario(temp_dir, DRIVER):
+def test_command_init_scenario(tmp_path: pathlib.Path, DRIVER):
     """Verify that init scenario works."""
-    role_directory = os.path.join(temp_dir.strpath, "test-init")
-    cmd = ["molecule", "init", "role", "test-init"]
-    scenario_name = "test-scenario-podman"
-    result = run_command(cmd)
-    assert result.returncode == 0
+    scenario_name = "default"
 
-    with change_dir_to(role_directory):
-        scenario_directory = os.path.join(molecule_directory(), scenario_name)
+    with change_dir_to(tmp_path):
+        scenario_directory = tmp_path / "molecule" / scenario_name
         cmd = [
             "molecule",
             "init",
             "scenario",
             scenario_name,
-            "--role-name",
-            "test-init",
             "--driver-name",
             DRIVER,
         ]
         result = run_command(cmd)
         assert result.returncode == 0
 
-        assert os.path.isdir(scenario_directory)
+        assert scenario_directory.exists()
 
         # run molecule reset as this may clean some leftovers from other
         # test runs and also ensure that reset works.
