@@ -25,9 +25,9 @@ import distutils.spawn
 import os
 from typing import Dict
 
+from ansible_compat.ports import cache
 from molecule import logger, util
 from molecule.api import Driver
-from molecule.util import lru_cache
 
 log = logger.get_logger(__name__)
 
@@ -198,7 +198,7 @@ class Podman(Driver):
             "ansible_podman_executable": f"{self.podman_exec}",
         }
 
-    @lru_cache()
+    @cache
     def sanity_checks(self):
         """Implement Podman driver sanity checks."""
         log.info("Sanity checks: '{}'".format(self._name))
