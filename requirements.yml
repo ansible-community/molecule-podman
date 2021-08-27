@@ -5,4 +5,4 @@ collections:
     # module with with podman.
     # https://galaxy.ansible.com/ansible/posix
   - name: containers.podman
-    version: 1.6.2
+    version: 1.7.0
