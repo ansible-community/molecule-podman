@@ -26,8 +26,12 @@ import os
 from typing import Dict
 
 from ansible_compat.ports import cache
+from ansible_compat.runtime import Runtime
 from molecule import logger, util
 from molecule.api import Driver
+from molecule.constants import RC_SETUP_ERROR
+from molecule.util import sysexit_with_message
+from packaging.version import Version
 
 log = logger.get_logger(__name__)
 
@@ -202,6 +206,16 @@ class Podman(Driver):
     def sanity_checks(self):
         """Implement Podman driver sanity checks."""
         log.info("Sanity checks: '{}'".format(self._name))
+        # TODO(ssbarnea): reuse ansible runtime instance from molecule once it
+        # fully adopts ansible-compat
+        runtime = Runtime()
+        if runtime.version < Version("2.10.0") and runtime.config.ansible_pipelining:
+            sysexit_with_message(
+                f"Podman connections do not work with Ansible {runtime.version} when pipelining is enabled. "
+                "Disable pipelining or "
+                "upgrade Ansible to 2.11 or newer.",
+                code=RC_SETUP_ERROR,
+            )
 
     @property
     def required_collections(self) -> Dict[str, str]:

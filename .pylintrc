@@ -1,6 +1,8 @@
 [MESSAGES CONTROL]
 
 disable =
+    # Disabled on purpose
+    wrong-import-order,  # managed by isort
     # TODO(ssbarnea): remove temporary skips adding during initial adoption:
     abstract-method,
     arguments-differ,
