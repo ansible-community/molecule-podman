@@ -21,7 +21,7 @@ def format_result(result: subprocess.CompletedProcess):
     )
 
 
-def test_command_init_scenario(tmp_path: pathlib.Path, DRIVER):
+def test_command_init_scenario(tmp_path: pathlib.Path):
     """Verify that init scenario works."""
     scenario_name = "default"
 
@@ -33,7 +33,7 @@ def test_command_init_scenario(tmp_path: pathlib.Path, DRIVER):
             "scenario",
             scenario_name,
             "--driver-name",
-            DRIVER,
+            "podman",
         ]
         result = run_command(cmd)
         assert result.returncode == 0
