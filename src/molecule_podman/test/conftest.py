@@ -3,7 +3,6 @@ import os
 import platform
 
 import pytest
-from molecule.test.conftest import random_string, temp_dir  # noqa
 
 
 def pytest_collection_finish(session):
@@ -15,6 +14,6 @@ def pytest_collection_finish(session):
 
 
 @pytest.fixture
-def DRIVER():
+def driver_name() -> str:
     """Return name of the driver to be tested."""
     return "podman"
