@@ -21,7 +21,7 @@ def format_result(result: subprocess.CompletedProcess):
     )
 
 
-def test_command_init_scenario(tmp_path: pathlib.Path, DRIVER):
+def test_command_init_scenario(tmp_path: pathlib.Path):
     """Verify that init scenario works."""
     scenario_name = "default"
 
@@ -33,7 +33,7 @@ def test_command_init_scenario(tmp_path: pathlib.Path, DRIVER):
             "scenario",
             scenario_name,
             "--driver-name",
-            DRIVER,
+            "podman",
         ]
         result = run_command(cmd)
         assert result.returncode == 0
@@ -51,6 +51,12 @@ def test_command_init_scenario(tmp_path: pathlib.Path, DRIVER):
         cmd = ["molecule", "--debug", "test", "-s", scenario_name]
         result = run_command(cmd)
         assert result.returncode == 0
+
+
+def test_sample() -> None:
+    """Runs the sample scenario present at the repository root."""
+    result = run_command(["molecule", "test"])  # default sceanario
+    assert result.returncode == 0
 
 
 def test_dockerfile():

@@ -155,7 +155,7 @@ class Podman(Driver):
 
     def __init__(self, config=None):
         """Construct Podman."""
-        super(Podman, self).__init__(config)
+        super().__init__(config)
         self._name = "podman"
         # To change the podman executable, set environment variable
         # MOLECULE_PODMAN_EXECUTABLE
@@ -205,7 +205,7 @@ class Podman(Driver):
     @cache
     def sanity_checks(self):
         """Implement Podman driver sanity checks."""
-        log.info("Sanity checks: '{}'".format(self._name))
+        log.info("Sanity checks: '%s'", self._name)
         # TODO(ssbarnea): reuse ansible runtime instance from molecule once it
         # fully adopts ansible-compat
         runtime = Runtime()
