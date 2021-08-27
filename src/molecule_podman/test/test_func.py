@@ -53,6 +53,12 @@ def test_command_init_scenario(tmp_path: pathlib.Path):
         assert result.returncode == 0
 
 
+def test_sample() -> None:
+    """Runs the sample scenario present at the repository root."""
+    result = run_command(["molecule", "test"])  # default sceanario
+    assert result.returncode == 0
+
+
 def test_dockerfile():
     """Verify that our embedded dockerfile can be build."""
     result = subprocess.run(
