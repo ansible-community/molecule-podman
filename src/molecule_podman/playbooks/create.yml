@@ -133,7 +133,7 @@
         name: "{{ podman_network.results[0].ansible_loop.allitems[0].network }}"
         executable: "{{ podman_exec }}"
         subnet:
-          "{{ podman_network.results[0].ansible_loop.allitems[0].subnet }}"
+          "{{ podman_network.results[0].ansible_loop.allitems[0].subnet | default(omit) }}"
       when:
         - podman_network.results[0].msg is defined
         - "'no such network' in podman_network.results[0].msg"
