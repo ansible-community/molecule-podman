@@ -17,9 +17,10 @@
       changed_when: true
 
     - name: Wait for instance(s) deletion to complete
+      become: "{{ not (item.item.rootless|default(true)) }}"
       async_status:
         jid: "{{ item.ansible_job_id }}"
-      register: docker_jobs
-      until: docker_jobs.finished
+      register: podman_jobs
+      until: podman_jobs.finished
       retries: 300
       with_items: "{{ server.results }}"
