@@ -161,10 +161,17 @@ class Podman(Driver):
         # MOLECULE_PODMAN_EXECUTABLE
         # An example could be MOLECULE_PODMAN_EXECUTABLE=podman-remote
         self.podman_exec = os.environ.get("MOLECULE_PODMAN_EXECUTABLE", "podman")
-        self.podman_cmd = distutils.spawn.find_executable(self.podman_exec)
-        if not self.podman_cmd:
-            msg = f"command not found in PATH {self.podman_exec}"
-            util.sysexit_with_message(msg)
+        self._podman_cmd = None
+
+    @property
+    def podman_cmd(self):
+        """Lazily calculate the podman command."""
+        if not self._podman_cmd:
+            self._podman_cmd = distutils.spawn.find_executable(self.podman_exec)
+            if not self._podman_cmd:
+                msg = f"command not found in PATH {self.podman_exec}"
+                util.sysexit_with_message(msg)
+        return self._podman_cmd
 
     @property
     def name(self):
