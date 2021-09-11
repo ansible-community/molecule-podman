@@ -23,12 +23,13 @@ from __future__ import absolute_import
 
 import distutils.spawn
 import os
+import warnings
 from typing import Dict
 
 from ansible_compat.ports import cache
 from ansible_compat.runtime import Runtime
 from molecule import logger, util
-from molecule.api import Driver
+from molecule.api import Driver, MoleculeRuntimeWarning
 from molecule.constants import RC_SETUP_ERROR
 from molecule.util import sysexit_with_message
 from packaging.version import Version
@@ -161,10 +162,17 @@ class Podman(Driver):
         # MOLECULE_PODMAN_EXECUTABLE
         # An example could be MOLECULE_PODMAN_EXECUTABLE=podman-remote
         self.podman_exec = os.environ.get("MOLECULE_PODMAN_EXECUTABLE", "podman")
-        self.podman_cmd = distutils.spawn.find_executable(self.podman_exec)
-        if not self.podman_cmd:
-            msg = f"command not found in PATH {self.podman_exec}"
-            util.sysexit_with_message(msg)
+        self._podman_cmd = None
+
+    @property
+    def podman_cmd(self):
+        """Lazily calculate the podman command."""
+        if not self._podman_cmd:
+            self._podman_cmd = distutils.spawn.find_executable(self.podman_exec)
+            if not self._podman_cmd:
+                msg = f"command not found in PATH {self.podman_exec}"
+                util.sysexit_with_message(msg)
+        return self._podman_cmd
 
     @property
     def name(self):
@@ -209,12 +217,21 @@ class Podman(Driver):
         # TODO(ssbarnea): reuse ansible runtime instance from molecule once it
         # fully adopts ansible-compat
         runtime = Runtime()
-        if runtime.version < Version("2.10.0") and runtime.config.ansible_pipelining:
-            sysexit_with_message(
-                f"Podman connections do not work with Ansible {runtime.version} when pipelining is enabled. "
-                "Disable pipelining or "
-                "upgrade Ansible to 2.11 or newer.",
-                code=RC_SETUP_ERROR,
+        if runtime.version < Version("2.10.0"):
+
+            if runtime.config.ansible_pipelining:
+                sysexit_with_message(
+                    "Podman connections do not work with Ansible "
+                    f"{runtime.version} when pipelining is enabled. "
+                    "Disable pipelining or "
+                    "upgrade Ansible to 2.11 or newer.",
+                    code=RC_SETUP_ERROR,
+                )
+            warnings.warn(
+                f"Use of molecule-podman with Ansible {runtime.version} is "
+                "unsupported, upgrade to Ansible 2.11 or newer. "
+                "Do not raise any bugs if your tests are failing with current configuration.",
+                category=MoleculeRuntimeWarning,
             )
 
     @property

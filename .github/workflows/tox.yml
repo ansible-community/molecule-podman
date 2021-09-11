@@ -27,19 +27,19 @@ jobs:
           - tox_env: lint
           # - tox_env: docs
           - tox_env: py36-ansible29
-            PREFIX: PYTEST_REQPASS=4
+            PREFIX: PYTEST_REQPASS=5
           - tox_env: py36-ansible210
-            PREFIX: PYTEST_REQPASS=4
+            PREFIX: PYTEST_REQPASS=5
           - tox_env: py36-ansible211
-            PREFIX: PYTEST_REQPASS=4
+            PREFIX: PYTEST_REQPASS=5
           - tox_env: py37-ansible211
-            PREFIX: PYTEST_REQPASS=4
+            PREFIX: PYTEST_REQPASS=5
           - tox_env: py38-ansible211
-            PREFIX: PYTEST_REQPASS=4
+            PREFIX: PYTEST_REQPASS=5
           - tox_env: py39-ansible211
-            PREFIX: PYTEST_REQPASS=4
+            PREFIX: PYTEST_REQPASS=5
           - tox_env: py39-devel-ansible211
-            PREFIX: PYTEST_REQPASS=4
+            PREFIX: PYTEST_REQPASS=5
           - tox_env: packaging
 
     steps:
