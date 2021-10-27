@@ -1,4 +1,8 @@
 ---
+ci:
+  skip:
+  # https://github.com/pre-commit-ci/issues/issues/55
+  - ansible-lint
 exclude: |
     (?x)(
         ^docs/conf.py$
