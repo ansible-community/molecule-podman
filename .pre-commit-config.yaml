@@ -58,6 +58,6 @@ repos:
           - ansible-core>=2.11.1
           - molecule>=3.5.0a0
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v5.3.0
+    rev: v5.3.1
     hooks:
       - id: ansible-lint
