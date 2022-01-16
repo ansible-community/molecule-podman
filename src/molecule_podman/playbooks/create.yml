@@ -152,6 +152,7 @@
         {% if item.privileged is defined %}--privileged={{ item.privileged }}{% endif %}
         {% if item.detach is defined %}--detach{% endif %}
         {% if item.security_opts is defined %}{% for i in item.security_opts %}--security-opt {{ i }} {% endfor %}{% endif %}
+        {% if item.devices is defined %}{% for i in item.devices %}--device {{ i }} {% endfor %}{% endif %}
         {% if item.volumes is defined %}{% for i in item.volumes %}--volume {{ i }} {% endfor %}{% endif %}
         {% if item.tmpfs is defined %}{% for i in item.tmpfs %}--tmpfs={{ i }} {% endfor %}{% endif %}
         {% if item.capabilities is defined %}{% for i in item.capabilities %}--cap-add={{ i }} {% endfor %}{% endif %}
