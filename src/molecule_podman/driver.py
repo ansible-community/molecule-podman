@@ -71,6 +71,8 @@ class Podman(Driver):
             privileged: True|False
             security_opts:
               - seccomp=unconfined
+            devices:
+              - /dev/sdc:/dev/xvdc:rwm
             volumes:
               - /sys/fs/cgroup:/sys/fs/cgroup:ro
             tmpfs:
