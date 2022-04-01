@@ -21,9 +21,9 @@
 
 from __future__ import absolute_import
 
-import distutils.spawn
 import os
 import warnings
+from shutil import which
 from typing import Dict
 
 from ansible_compat.ports import cache
@@ -170,7 +170,7 @@ class Podman(Driver):
     def podman_cmd(self):
         """Lazily calculate the podman command."""
         if not self._podman_cmd:
-            self._podman_cmd = distutils.spawn.find_executable(self.podman_exec)
+            self._podman_cmd = which(self.podman_exec)
             if not self._podman_cmd:
                 msg = f"command not found in PATH {self.podman_exec}"
                 util.sysexit_with_message(msg)
