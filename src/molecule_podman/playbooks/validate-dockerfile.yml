@@ -17,7 +17,7 @@
   tasks:
 
     - name: Create isolated build directories for each image
-      tempfile:
+      ansible.builtin.tempfile:
         prefix: "molecule-dockerfile-{{ item.image }}"
         state: directory
       register: temp_image_dirs
@@ -26,7 +26,7 @@
         label: "{{ item.image }}"
 
     - name: Expand Dockerfile templates
-      template:
+      ansible.builtin.template:
         src: Dockerfile.j2
         dest: "{{ temp_image_dirs.results[index].path }}/Dockerfile"
         mode: 0600
@@ -48,11 +48,11 @@
       register: result
 
     - name: Clean up temporary Dockerfile's
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       loop: "{{ temp_image_dirs.results | map(attribute='path') | list }}"
 
     - name: Display result
-      debug:
+      ansible.builtin.debug:
         var: result

@@ -3,5 +3,5 @@
   hosts: all
   tasks:
     - name: test
-      debug:
+      ansible.builtin.debug:
         msg: it worked!
