@@ -9,17 +9,17 @@
     podman_exec: "{{ lookup('env','MOLECULE_PODMAN_EXECUTABLE')|default('podman',true) }}"
   tasks:
     - name: get podman executable path
-      command: which {{ podman_exec }}
+      ansible.builtin.command: which {{ podman_exec }}
       register: podman_path
       environment:
         PATH: "{{ ansible_env.PATH }}:/sbin:/usr/sbin"
       changed_when: false
     - name: save path to executable as fact
-      set_fact:
+      ansible.builtin.set_fact:
         podman_cmd: "{{ podman_path.stdout }}"
 
     - name: Log into a container registry
-      command: >
+      ansible.builtin.command: >
         {{ podman_cmd }} login
         --username {{ item.registry.credentials.username }}
         --password {{ item.registry.credentials.password }}
@@ -37,7 +37,7 @@
         - item.registry.credentials.username is defined
 
     - name: Check presence of custom Dockerfiles
-      stat:
+      ansible.builtin.stat:
         path: "{{ molecule_scenario_directory + '/' + (item.dockerfile | default( 'Dockerfile.j2')) }}"
       loop: "{{ molecule_yml.platforms }}"
       loop_control:
@@ -45,7 +45,7 @@
       register: dockerfile_stats
 
     - name: Create Dockerfiles from image names
-      template:
+      ansible.builtin.template:
         src: >-
           {%- if dockerfile_stats.results[i].stat.exists -%}
           {{ molecule_scenario_directory + '/' + (item.dockerfile | default( 'Dockerfile.j2')) }}
@@ -75,7 +75,7 @@
       register: podman_images
 
     - name: Build an Ansible compatible image  # noqa: no-handler
-      command: >
+      ansible.builtin.command: >
         {{ podman_cmd }} build
         -f {{ item.dest }}
         -t molecule_local/{{ item.item.image }}
@@ -94,7 +94,7 @@
       no_log: false
 
     - name: Determine the CMD directives
-      set_fact:
+      ansible.builtin.set_fact:
         command_directives_dict: >-
           {{ command_directives_dict | default({}) |
              combine({ item.name: item.command | default('bash -c "while true; do sleep 10000; done"') })
@@ -108,7 +108,7 @@
 
     # https://github.com/ansible-community/molecule-podman/issues/22
     - name: Remove possible pre-existing containers
-      command: >
+      ansible.builtin.command: >
         {{ podman_cmd }} rm -f -i -v {% for key in molecule_yml.platforms %}{{ key.name }} {% endfor %}
       register: result
       changed_when: true
@@ -140,7 +140,7 @@
         - podman_network.results[0].networks is undefined
 
     - name: Create molecule instance(s)
-      command: >
+      ansible.builtin.command: >
         {{ podman_cmd }}
         {% if item.cgroup_manager is defined %}--cgroup-manager={{ item.cgroup_manager }}{% endif %}
         {% if item.storage_opt is defined %}--storage-opt={{ item.storage_opt }}{% endif %}
@@ -180,7 +180,7 @@
 
     - name: Wait for instance(s) creation to complete
       become: "{{ not item.item.rootless | default(omit) }}"
-      async_status:
+      ansible.builtin.async_status:
         jid: "{{ item.ansible_job_id }}"
       register: podman_jobs
       until: podman_jobs.finished
