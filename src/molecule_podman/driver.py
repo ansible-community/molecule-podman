@@ -104,6 +104,8 @@ class Podman(Driver):
             storage_opt: overlay.mount_program=/usr/bin/fuse-overlayfs
             storage_driver: overlay
             systemd: true|false|always
+            extra_opts:
+              - --memory=128m
 
     If specifying the `CMD`_ directive in your ``Dockerfile.j2`` or consuming a
     built image which declares a ``CMD`` directive, then you must set
