@@ -11,7 +11,7 @@
       # not mean molecule itself can run on them.
       - image: alpine:edge
       - image: centos:7
-      - image: centos:8
+      # - image: centos:8
       - image: ubuntu:latest
       - image: debian:latest
   tasks:
