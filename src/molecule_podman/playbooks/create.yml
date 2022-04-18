@@ -136,7 +136,7 @@
           "{{ podman_network.results[0].ansible_loop.allitems[0].subnet | default(omit) }}"
       when:
         - podman_network.results[0].msg is defined
-        - "'no such network' in podman_network.results[0].msg"
+        - "'network not found' in podman_network.results[0].msg"
         - podman_network.results[0].networks is undefined
 
     - name: Create molecule instance(s)
