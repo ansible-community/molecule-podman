@@ -192,7 +192,7 @@ class Podman(Driver):
             f"{self.podman_cmd} exec "
             "-e COLUMNS={columns} "
             "-e LINES={lines} "
-            "-e TERM=bash "
+            "-e SHELL=bash "
             "-e TERM=xterm "
             "-ti {instance} bash"
         )
