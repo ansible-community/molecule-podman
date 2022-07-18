@@ -47,16 +47,16 @@ repos:
         entry: mypy src/
         pass_filenames: false
         additional_dependencies:
-          - ansible-compat>=0.5.0
-          - molecule>=3.5.0a0
+          - ansible-compat>=2.2.0
+          - molecule>=4.0.0
           - packaging
   - repo: https://github.com/pre-commit/mirrors-pylint
     rev: v3.0.0a5
     hooks:
       - id: pylint
         additional_dependencies:
-          - ansible-core>=2.11.1
-          - molecule>=3.5.0a0
+          - ansible-core>=2.13
+          - molecule>=4.0.0
   - repo: https://github.com/ansible/ansible-lint.git
     rev: v6.3.0
     hooks:
