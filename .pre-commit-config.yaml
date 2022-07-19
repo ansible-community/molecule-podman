@@ -7,6 +7,10 @@ exclude: |
     (?x)(
         ^docs/conf.py$
     )
+default_language_version:
+  # make linting predictable, especially as we know that current pylint is not
+  # working well with py311.
+  python: python3.8
 repos:
   - repo: https://github.com/PyCQA/isort
     rev: 5.10.1
@@ -50,11 +54,12 @@ repos:
           - ansible-compat>=2.2.0
           - molecule>=4.0.0
           - packaging
-  - repo: https://github.com/pre-commit/mirrors-pylint
-    rev: v3.0.0a5
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.14.5
     hooks:
       - id: pylint
         additional_dependencies:
+          # - astroid<=v2.11.6  #
           - ansible-core>=2.13
           - molecule>=4.0.0
   - repo: https://github.com/ansible/ansible-lint.git
