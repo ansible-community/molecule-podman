@@ -26,7 +26,6 @@ import warnings
 from shutil import which
 from typing import Dict
 
-from ansible_compat.ports import cache
 from ansible_compat.runtime import Runtime
 from molecule import logger, util
 from molecule.api import Driver, MoleculeRuntimeWarning
@@ -167,6 +166,7 @@ class Podman(Driver):
         # An example could be MOLECULE_PODMAN_EXECUTABLE=podman-remote
         self.podman_exec = os.environ.get("MOLECULE_PODMAN_EXECUTABLE", "podman")
         self._podman_cmd = None
+        self._sanity_passed = False
 
     @property
     def podman_cmd(self):
@@ -214,9 +214,11 @@ class Podman(Driver):
             "ansible_podman_executable": f"{self.podman_exec}",
         }
 
-    @cache
     def sanity_checks(self):
         """Implement Podman driver sanity checks."""
+        if self._sanity_passed:
+            return
+
         log.info("Sanity checks: '%s'", self._name)
         # TODO(ssbarnea): reuse ansible runtime instance from molecule once it
         # fully adopts ansible-compat
@@ -237,6 +239,7 @@ class Podman(Driver):
                 "Do not raise any bugs if your tests are failing with current configuration.",
                 category=MoleculeRuntimeWarning,
             )
+        self._sanity_passed = True
 
     @property
     def required_collections(self) -> Dict[str, str]:
