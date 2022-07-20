@@ -138,6 +138,7 @@
         - podman_network.results[0].msg is defined
         - "'no such network' in podman_network.results[0].msg"
         - podman_network.results[0].networks is undefined
+        - "podman_network.results[0].ansible_loop.allitems[0].network not in ['bridge', 'none', 'host', 'ns', 'private', 'slirp4netns']"
 
     - name: Create molecule instance(s)
       ansible.builtin.command: >
