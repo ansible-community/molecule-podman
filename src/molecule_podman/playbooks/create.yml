@@ -136,7 +136,8 @@
           "{{ podman_network.results[0].ansible_loop.allitems[0].subnet | default(omit) }}"
       when:
         - podman_network.results[0].msg is defined
-        - "'no such network' in podman_network.results[0].msg"
+        # podman message changed at some point in time
+        - "'no such network' in podman_network.results[0].msg or 'network not found' in podman_network.results[0].msg"
         - podman_network.results[0].networks is undefined
         - "podman_network.results[0].ansible_loop.allitems[0].network not in ['bridge', 'none', 'host', 'ns', 'private', 'slirp4netns']"
 
