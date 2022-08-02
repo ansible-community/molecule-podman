@@ -33,7 +33,7 @@ repos:
       - id: debug-statements
         language_version: python3
   - repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
+    rev: 5.0.2
     hooks:
       - id: flake8
         additional_dependencies:
@@ -43,7 +43,7 @@ repos:
           - flake8-docstrings>=1.5.0
         language_version: python3
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.961
+    rev: v0.971
     hooks:
       - id: mypy
         # empty args needed in order to match mypy cli behavior
@@ -63,6 +63,6 @@ repos:
           - ansible-core>=2.13
           - molecule>=4.0.0
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v6.3.0
+    rev: v6.4.0
     hooks:
       - id: ansible-lint
