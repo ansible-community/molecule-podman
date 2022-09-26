@@ -55,7 +55,7 @@ repos:
           - molecule>=4.0.0
           - packaging
   - repo: https://github.com/pycqa/pylint
-    rev: v2.15.2
+    rev: v2.15.3
     hooks:
       - id: pylint
         additional_dependencies:
@@ -63,6 +63,6 @@ repos:
           - ansible-core>=2.13
           - molecule>=4.0.0
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v6.5.2
+    rev: v6.7.0
     hooks:
       - id: ansible-lint
