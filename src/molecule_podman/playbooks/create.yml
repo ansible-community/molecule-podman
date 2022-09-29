@@ -14,9 +14,15 @@
       environment:
         PATH: "{{ ansible_env.PATH }}:/sbin:/usr/sbin"
       changed_when: false
+
     - name: save path to executable as fact
       ansible.builtin.set_fact:
         podman_cmd: "{{ podman_path.stdout }}"
+
+    - name: Set async_dir for HOME env
+      ansible.builtin.set_fact:
+        ansible_async_dir: "{{ lookup('env', 'HOME') }}/.ansible_async/"
+      when: (lookup('env', 'HOME'))
 
     - name: Log into a container registry
       ansible.builtin.command: >
