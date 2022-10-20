@@ -13,8 +13,8 @@
         podman_cmd: "{{ lookup('ansible.builtin.first_found', params) }}"
       vars:
         params:
-          files: "{{ [ podman_exec ] }}"
-          paths: "{{ ansible_env.PATH | split(':') + ['/sbin', '/usr/sbin'] }}"
+          files: "{{ [podman_exec] }}"
+          paths: "{{ (lookup('env', 'PATH') | split(':')) + ['/sbin', '/usr/sbin'] }}"
 
     - name: Set async_dir for HOME env
       ansible.builtin.set_fact:
