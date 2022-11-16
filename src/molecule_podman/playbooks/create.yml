@@ -9,7 +9,7 @@
     podman_exec: "{{ lookup('env','MOLECULE_PODMAN_EXECUTABLE')|default('podman',true) }}"
   tasks:
     - name: Get podman executable path
-      ansible.builtin.command: "command -v {{ podman_exec }}"
+      ansible.builtin.shell: "command -v {{ podman_exec }}"
       register: _podman_path
       changed_when: false
 
