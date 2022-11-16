@@ -15,7 +15,7 @@
 
     - name: Register podman executable path
       ansible.builtin.set_fact:
-        podman_cmd: "{{ _podman_path }}"
+        podman_cmd: "{{ _podman_path.stdout }}"
 
     - name: Set async_dir for HOME env
       ansible.builtin.set_fact:
