@@ -8,13 +8,14 @@
   vars:
     podman_exec: "{{ lookup('env','MOLECULE_PODMAN_EXECUTABLE')|default('podman',true) }}"
   tasks:
+    - name: Get podman executable path
+      ansible.builtin.command: "command -v {{ podman_exec }}"
+      register: _podman_path
+      changed_when: false
+
     - name: Register podman executable path
       ansible.builtin.set_fact:
-        podman_cmd: "{{ lookup('ansible.builtin.first_found', params) }}"
-      vars:
-        params:
-          files: "{{ [podman_exec] }}"
-          paths: "{{ (lookup('env', 'PATH') | split(':')) + ['/sbin', '/usr/sbin'] }}"
+        podman_cmd: "{{ _podman_path }}"
 
     - name: Set async_dir for HOME env
       ansible.builtin.set_fact:
