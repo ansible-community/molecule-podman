@@ -2,6 +2,6 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: test
+    - name: Test
       ansible.builtin.debug:
         msg: it worked!
