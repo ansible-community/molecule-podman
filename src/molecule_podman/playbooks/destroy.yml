@@ -35,6 +35,8 @@
         name: "{{ item.network }}"
         executable: "{{ podman_exec }}"
         state: absent
+      when:
+        - item.network is defined
       loop: "{{ molecule_yml.platforms | flatten(levels=1) }}"
       loop_control:
         extended: true
