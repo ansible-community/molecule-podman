@@ -25,26 +25,27 @@ jobs:
       matrix:
         include:
           - tox_env: lint
-            python-version: 3.8
+            python-version: 3.9
           # - tox_env: docs
-          - tox_env: packaging
-            python-version: 3.8
-          - name: py38
-            tox_env: py38,py38-devel
-            PREFIX: PYTEST_REQPASS=5
-            python-version: 3.8
+          - tox_env: pkg
+            python-version: 3.9
           - name: py39
-            tox_env: py39,py39-devel
+            tox_env: py39
             PREFIX: PYTEST_REQPASS=5
             python-version: 3.9
           - name: py310
-            tox_env: py310,py310-devel
+            tox_env: py310
             PREFIX: PYTEST_REQPASS=5
             python-version: "3.10"
           - name: py311
             tox_env: py311,py311-devel
             PREFIX: PYTEST_REQPASS=5
-            python-version: "~3.11.0-0"
+            python-version: "3.11"
+          - name: py311
+            tox_env: py-devel
+            PREFIX: PYTEST_REQPASS=5
+            python-version: "3.11"
+
 
     steps:
 
