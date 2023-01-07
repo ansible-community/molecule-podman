@@ -29,3 +29,15 @@
       until: podman_jobs.finished
       retries: 300
       with_items: "{{ server.results }}"
+
+    - name: Delete podman network dedicated to this scenario
+      containers.podman.podman_network:
+        name: "{{ item.network }}"
+        executable: "{{ podman_exec }}"
+        state: absent
+      when:
+        - item.network is defined
+      loop: "{{ molecule_yml.platforms | flatten(levels=1) }}"
+      loop_control:
+        extended: true
+        label: "{{ item.name }}: {{ item.network | default('None specified') }}"
