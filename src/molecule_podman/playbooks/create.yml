@@ -85,6 +85,7 @@
         -t molecule_local/{{ item.item.image }}
         {% if item.item.buildargs is defined %}{% for i, k in item.item.buildargs.items() %}--build-arg={{ i }}={{ k }}{% endfor %}{% endif %}
         {% if item.item.pull is defined %}--pull={{ item.item.pull }}{% endif %}
+        {{ molecule_scenario_directory + '/' + (item.item.dockerfile | default( 'Dockerfile.j2')) | dirname }}
       with_items: "{{ platforms.results }}"
       loop_control:
         label: "{{ item.item.image | default('None specified') }}"
